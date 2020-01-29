@@ -1,0 +1,205 @@
+/**
+ * IntituleBilan entity.
+ * @author Sanda
+ *  cette able recapitule l'ensemble des intitules
+ *  de tous les bilans existant c-a-d 
+ *  système allegé
+ *  système minimal et le
+ *  système normal
+ *  relationship
+ *  	- ManyToOne avec Contact
+ *     - OneToMany avec IntituleBilan entité sup
+ *     - ManyToMany avec PlanComptable pour le 
+ *     regroupement automatique des comptes du 
+ *     journal en vue de la mise sur pied du journal
+ *     systeme
+ */
+entity IntituleBilan {
+    code String
+    intituleBilan String
+    sensVariation DebitCredit
+}
+/**
+ * IntituleEtat entity.
+ * @author Sanda
+ *  C'est l'ensemble de tous les intitules qui 
+ *  n'ont pas code ni d'hierarchisation mais
+ *   qui sont repertoriés en debit et credit
+ */
+entity IntituleEtat {
+    intitule String
+    codeAppartenance Integer
+    sensVariation DebitCredit
+}
+/**
+ * Bilan entity.
+ * @author Sanda
+ *  Le bilan est la composition de l'intitule bilan 
+ *  et des montants de chaque postes en terme de
+ *  brut = 1
+ *  amortissement = 2
+ *  SERVICE
+ *     - Requête  
+ */
+entity Bilan {
+    intitule Double
+    codeAppartenance Integer
+}
+/**
+ * Resultat entity.
+ * @author Sanda
+ *  Le Resultat est la composition de l'intituleEtat
+ *  et des montants de chaque postes 
+ *  RELATION
+ *   ManyToOne avec IntituleEtat
+ */
+entity Resultat {
+    montantPoste Double
+}
+/**
+ * Tafire entity.
+ * @author Sanda
+ *  Le Tafire est la composition de l'intituleEtat
+ *  et des montants de chaque postes 
+ *  nous aurons des services qui créeront:
+ *     - TafireCafg
+ *     - TafireCreance
+ *     - TafireDette
+ *     - TafireStock
+ *  RELATION
+ *   ManyToOne avec Resultat
+ */
+entity Tafire {
+    montant Double
+}
+/**
+ * TafireCafg entity.
+ * @author Sanda
+ *  Le Tafire est la composition de l'intituleEtat
+ *  et des montants de chaque postes 
+ *  nous aurons des services qui créeront:
+ *     - TafireCafg
+ *  RELATION
+ *   ManyToOne avec Resultat
+ */
+entity TafireCafg {
+    montant Double
+}
+/**
+ * TafireCreance entity.
+ * @author Sanda
+ *  Le Tafire est la composition de l'intituleEtat
+ *  et des montants de chaque postes 
+ *  nous aurons des services qui créeront:
+ *     - TafireCreance
+ *  RELATION
+ *   ManyToOne avec Resultat
+ */
+entity TafireCreance {
+    montant Double
+}
+/**
+ * TafireDette entity.
+ * @author Sanda
+ *  Le Tafire est la composition de l'intituleEtat
+ *  et des montants de chaque postes 
+ *  nous aurons des services qui créeront:
+ *     - TafireCreance
+ *  RELATION
+ *   ManyToOne avec Resultat
+ */
+entity TafireDette {
+    montant Double
+}
+/**
+ * TafireStock entity.
+ * @author Sanda
+ *  Le Tafire est la composition de l'intituleEtat
+ *  et des montants de chaque postes 
+ *  nous aurons des services qui créeront:
+ *     - TafireCreance
+ *  RELATION
+ *   ManyToOne avec Resultat
+ */
+entity TafireStock {
+    montant Double
+}
+enum DebitCredit {
+    CREDIT, DEBIT
+}
+/**
+ * PlanComptable entity.
+ * @author Sanda
+ *     Cette table montre les divers plan comptable
+ *     existent ainsi que leur diverses classifications
+ *  Le classement commencera du plan comptable 
+ *     - Normal
+ * ressources durable etc
+ *     - Bancaire
+ *     - Assurance etc
+ *  relationship
+ *     - OneToMany avec PlanComptable entite sup
+ *     - ManyToOne avec PlanComptable entite sup
+ */
+entity PlanComptable {
+    numeroCompte String
+    intitule String
+    sens DebitCredit
+}
+/**
+ * One to many relationship.
+ */
+relationship OneToMany {
+    EtatFinancier to Bilan
+}
+/**
+ * One to many relationship.
+ */
+relationship OneToOne {
+    Bilan to IntituleBilan
+}
+/**
+ * One to many relationship.
+ */
+relationship OneToOne {
+    Resultat to IntituleEtat
+}
+/**
+ * One to many relationship.
+ */
+relationship OneToMany {
+    EtatFinancier to Resultat
+}
+/**
+ * One to many relationship.
+ */
+relationship OneToOne {
+    Tafire to IntituleEtat
+}
+/**
+ * One to many relationship.
+ */
+relationship OneToMany {
+    EtatFinancier to Tafire
+}
+relationship OneToMany {
+    EtatFinancier to TafireCafg
+}
+relationship OneToMany {
+    EtatFinancier to TafireCreance
+}
+relationship OneToMany {
+    EtatFinancier to TafireDette
+}
+relationship OneToMany {
+    EtatFinancier to TafireStock
+}
+// Set pagination options
+paginate PlanComptable with infinite-scroll
+paginate Bilan, Resultat, Tafire, TafireCafg, TafireCreance, TafireDette, TafireStock with pagination
+// Use Data Transfert Objects (DTO)
+dto Bilan, Resultat, Tafire, TafireCafg, TafireCreance, TafireDette, TafireStock with mapstruct
+// Set service options to all except few
+service all with serviceImpl except EtatFinancier, IntituleEtat, IntituleBilan,  PlanComptable
+// Set an angular suffix
+// angularSuffix * with mySuffix
